@@ -3,6 +3,8 @@ import sys
 
 import matplotlib.pyplot as plt
 
+
+
 def readCSV(filename):
     '''Reads the CSV file `filename` and returns a list
     with as many items as the CSV has rows. Each list item 
@@ -14,6 +16,7 @@ def readCSV(filename):
         lines = list(rdr)
     return(lines)
 
+HPpermits= readCSV("permits_hydepark.csv")
 
 
 ### enter your code below
@@ -46,8 +49,7 @@ def get_avg_latlng(x):
 #print len(permits)
 
 #Find latitude and longitude in Hyde Park only
-HPpermits= readCSV("permits_hydepark.csv")
-get_avg_latlng(HPpermits)
+#get_avg_latlng(HPpermits)
 
 
 def zip_code_barchart(x):
@@ -90,4 +92,9 @@ def zip_code_barchart(x):
 	plt.savefig("barchart.jpg")
 
 
-zip_code_barchart(HPpermits)
+#zip_code_barchart(HPpermits)
+
+if sys.argv[1]=="latlong":
+	get_avg_latlng(HPpermits)
+elif sys.argv[1]=="hist":
+	zip_code_barchart(HPpermits)
