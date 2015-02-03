@@ -19,39 +19,46 @@ def readCSV(filename):
 ### enter your code below
 
 def get_avg_latlng(x):
+	"""Finds the average latitude and longitude"""
 	LATITUDE=[]
 	LONGITUDE=[]
+
+	#pull the latitude and longitude from the tuples in the provided list
 	for i in range(len(x)):
 		lat=float(x[i][-2])
 		LATITUDE.append(lat)
 		lon=float(x[i][-3])
 		LONGITUDE.append(lon)
+
+	#Uncomment to test code	
 	#print LATITUDE
 	#print LONGITUDE	
+
+	#calculate the average latitude and longitude
 	for var in x:
 		avglat=sum(LATITUDE)/float(len(LATITUDE))
 		avglong=sum(LONGITUDE)/float(len(LONGITUDE))
 	print (avglat,avglong)
 
-permits=readCSV("permits.csv")
-HPpermits= readCSV("permits_hydepark.csv")
-#print HPpermits
-#print len(HPpermits)
 
+#Use this code to run programs on whole list of permits
+#permits=readCSV("permits.csv")
+#print len(permits)
+
+#Find latitude and longitude in Hyde Park only
+HPpermits= readCSV("permits_hydepark.csv")
 get_avg_latlng(HPpermits)
 
-print len(permits)
 
 def zip_code_barchart(x):
 	zipcode_list={}
-	#for data in x:
-	#	rowdata=[cell.text for cell in x]
-	#	zipcode=rowdata[28]
-	#	zipcode_list.append(zipcode)
 
-	#print zipcode_list[3:6]
+	#Loop through data to strip out zipcodes and clean data
 	for i in range(1,len(x)):
 		zipcode=x[i][28]
+
+		#Clean data by stripping zipcodes of extra characters
+		#and converting to integers
 		modzip=zipcode[0:5]
 		if not modzip:
 			modzip=0
@@ -60,20 +67,26 @@ def zip_code_barchart(x):
 		elif '-' in modzip:
 			modzip=0
 		intzip=int(modzip)
+
+		#uncomment below to test code
 		#print intzip
+
+		#Develop dictionary of zipcodes and their counts
 		if intzip in zipcode_list:
 			zipcode_list[intzip]+=1
 		else:
 			zipcode_list[intzip]=1
-		
-		#zipcode_list.append(zipcode)
+
+	#Uncomment to test code	
 	#print zipcode_list
+
+	#Create a bar graph of zipcodes and frequency
 	plt.bar(range(len(zipcode_list)),zipcode_list.values(),align='center')
 	plt.xticks(range(len(zipcode_list)),zipcode_list.keys())
-	#zipcode_list[0],zipcode_list[1])
-	#plt.hist(zipcode_list)
 	plt.title("Frequency of Zipcodes")
 	#plt.show()
+
+	#Save graph in directory
 	plt.savefig("barchart.jpg")
 
 
