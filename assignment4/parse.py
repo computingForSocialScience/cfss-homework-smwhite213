@@ -53,6 +53,7 @@ def get_avg_latlng(x):
 
 
 def zip_code_barchart(x):
+	"""Creates a bar chart of zipcodes"""
 	zipcode_list={}
 
 	#Loop through data to strip out zipcodes and clean data
