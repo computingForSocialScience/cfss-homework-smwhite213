@@ -47,15 +47,36 @@ def fetchAlbumIds(artist_id):
     	rawuri=album['uri']
     	uri=rawuri[14:]
     	albums_ids.append(uri)
-    print albums_ids
+    return albums_ids
 
     #print data
 
-fetchAlbumIds(fetchArtistId('Led Zeppelin'))
+#fetchAlbumIds(fetchArtistId('Led Zeppelin'))
 
 def fetchAlbumInfo(album_id):
     """Using the Spotify API, take an album ID 
     and return a dictionary with keys 'artist_id', 'album_id' 'name', 'year', popularity'
     """
-    pass
+    url="https://api.spotify.com/v1/albums/"+album_id
+    req=requests.get(url)
+    data=req.json()
+    albuminfo={}
 
+    artistinfo=data['artists']
+    firstartist=artistinfo[0]
+    artist_id=firstartist['id']
+    albuminfo['artist_id']=artist_id
+
+    rawuri=data['uri']
+    albuminfo['album_id']=rawuri[14:]
+
+    albuminfo['name']=data['name']
+
+    releasedate=data['release_date']
+    year=releasedate[0:4]
+    albuminfo['year']=year
+    
+    albuminfo['popularity']=data['popularity']
+    print albuminfo
+
+fetchAlbumInfo(fetchAlbumIds(fetchArtistId('Led Zeppelin'))[0])
