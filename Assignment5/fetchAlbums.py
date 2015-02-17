@@ -1,6 +1,13 @@
 import requests
 from datetime import datetime
 
+from fetchArtist import fetchArtistId
+from fetchArtist import fetchArtistInfo
+
+###NOTE: I HAD DIFFICULTIES IMPORTING FUNCTIONS FROM OTHER python files
+###SCROLL DOWN TO SEE NEW CODE
+
+
 def fetchArtistId(name):
     """Using the Spotify API search method, take a string that is the artist's name, 
     and return a Spotify artist ID.
@@ -33,6 +40,10 @@ def fetchArtistInfo(artist_id):
     artistinfo['popularity']=data['popularity']
     return artistinfo
     
+
+####NEW CODE STARTS HERE
+
+
 def fetchAlbumIds(artist_id):
     """Using the Spotify API, take an artist ID and 
     returns a list of album IDs in a list
@@ -75,7 +86,7 @@ def fetchAlbumInfo(album_id):
     releasedate=data['release_date']
     year=releasedate[0:4]
     albuminfo['year']=year
-    
+
     albuminfo['popularity']=data['popularity']
     print albuminfo
 
