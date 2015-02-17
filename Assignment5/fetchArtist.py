@@ -32,7 +32,7 @@ def fetchArtistInfo(artist_id):
     artistinfo['id']=artist_id
     artistinfo['name']=data['name']
     artistinfo['popularity']=data['popularity']
-    return artistinfo
+    print artistinfo
 
 fetchArtistInfo(fetchArtistId('Led Zeppelin'))
 
