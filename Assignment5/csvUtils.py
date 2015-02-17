@@ -7,6 +7,9 @@ from fetchArtist import fetchArtistInfo
 from fetchAlbums import fetchAlbumInfo
 from fetchAlbums import fetchAlbumIds
 
+###NOTE: I HAD DIFFICULTIES IMPORTING FUNCTIONS FROM OTHER python files
+###SCROLL DOWN TO SEE NEW CODE
+
 def fetchArtistId(name):
     """Using the Spotify API search method, take a string that is the artist's name, 
     and return a Spotify artist ID.
@@ -39,11 +42,6 @@ def fetchArtistInfo(artist_id):
     artistinfo['popularity']=data['popularity']
     return artistinfo
 
-fetchArtistInfo(fetchArtistId('Led Zeppelin'))
-artist_dictionary=[]
-artist_dictionary.append(fetchArtistInfo(fetchArtistId('Led Zeppelin')))
-artist_dictionary.append(fetchArtistInfo(fetchArtistId('Robert Johnson')))
-
 def fetchAlbumInfo(album_id):
     """Using the Spotify API, take an album ID 
     and return a dictionary with keys 'artist_id', 'album_id' 'name', 'year', popularity'
@@ -69,6 +67,16 @@ def fetchAlbumInfo(album_id):
     
     albuminfo['popularity']=data['popularity']
     return albuminfo
+
+
+#####NEW CODE STARTS HERE!!!
+
+fetchArtistInfo(fetchArtistId('Led Zeppelin'))
+artist_dictionary=[]
+artist_dictionary.append(fetchArtistInfo(fetchArtistId('Led Zeppelin')))
+artist_dictionary.append(fetchArtistInfo(fetchArtistId('Robert Johnson')))
+
+
 
 def writeArtistsTable(artist_info_list):
     """Given a list of dictionries, each as returned from 
@@ -100,9 +108,7 @@ writeArtistsTable(artist_dictionary)
 
 album_list=[]
 album_list=fetchAlbumIds(fetchArtistId('Led Zeppelin'))
-#print ("Test line")
-#print album_list
-#for i in range(len())
+
 
 def writeAlbumsTable(album_info_list):
     """
