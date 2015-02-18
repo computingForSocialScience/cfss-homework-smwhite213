@@ -21,8 +21,8 @@ def fetchArtistId(name):
     artist_id=artid[15:]
     return artist_id
 
-test=fetchArtistId('earth wind and fire')
-print test
+#test=fetchArtistId('earth wind and fire')
+#print test
 
 def fetchArtistInfo(artist_id):
     """Using the Spotify API, takes a string representing the id and
