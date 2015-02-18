@@ -8,37 +8,6 @@ from fetchArtist import fetchArtistInfo
 ###SCROLL DOWN TO SEE NEW CODE
 
 
-def fetchArtistId(name):
-    """Using the Spotify API search method, take a string that is the artist's name, 
-    and return a Spotify artist ID.
-    """
-    url="https://api.spotify.com/v1/search?query="+'"'+name+'"'+"&type=artist"
-    req=requests.get(url)
-    data=req.json()
-    artists=data['artists']
-    items=artists['items']
-    firstitems=items[0]
-    artid=firstitems['uri']
-    artist_id=artid[15:]
-    return artist_id
-
-#fetchArtistId('Led Zeppelin')
-
-def fetchArtistInfo(artist_id):
-    """Using the Spotify API, takes a string representing the id and
-`   returns a dictionary including the keys 'followers', 'genres', 
-    'id', 'name', and 'popularity'.
-    """
-    url="https://api.spotify.com/v1/artists/"+artist_id+"&album_type=album&market=US"
-    req=requests.get(url)
-    data=req.json()
-    artistinfo={}
-    artistinfo['followers']=data['followers']
-    artistinfo['genres']=data['genres']
-    artistinfo['id']=artist_id
-    artistinfo['name']=data['name']
-    artistinfo['popularity']=data['popularity']
-    return artistinfo
     
 
 ####NEW CODE STARTS HERE
@@ -48,13 +17,12 @@ def fetchAlbumIds(artist_id):
     """Using the Spotify API, take an artist ID and 
     returns a list of album IDs in a list
     """
-    url="https://api.spotify.com/v1/artists/"+artist_id+"/albums"
+    url="https://api.spotify.com/v1/artists/"+artist_id+"/albums?offset=0&album_type=album&market=US"
     req=requests.get(url)
     data=req.json()
     items=data['items']
     albums_ids=[]
     for album in items:
-    	#number=items[i]
     	rawuri=album['uri']
     	uri=rawuri[14:]
     	albums_ids.append(uri)
@@ -88,6 +56,6 @@ def fetchAlbumInfo(album_id):
     albuminfo['year']=year
 
     albuminfo['popularity']=data['popularity']
-    print albuminfo
+    return albuminfo
 
-fetchAlbumInfo(fetchAlbumIds(fetchArtistId('Led Zeppelin'))[0])
+#fetchAlbumInfo(fetchAlbumIds(fetchArtistId('Led Zeppelin'))[0])
