@@ -15,7 +15,7 @@ def testFetchArtistInfo():
     assert fetchArtistInfo('6UE7nl9mha6s8z0wFQFIZ2')['genres'] == [u'europop']
 
 def testFetchAlbums():
-    assert len(fetchAlbumIds('57anmI1X2hXWPrNagFdzZr')) == 10
+    assert len(fetchAlbumIds('57anmI1X2hXWPrNagFdzZr')) == 9
 
 def testFetchAlbumInfo():
     albumInfo = fetchAlbumInfo('24geHauG3JIbpyf9CRiuvf')
@@ -23,7 +23,7 @@ def testFetchAlbumInfo():
     assert albumInfo['popularity'] == 44
 
 def testWriteArtistsInfo():
-    artistId1 = fetchArtistId('earth wind fire')
+    artistId1 = fetchArtistId('earth wind and fire')
     artistId2 = fetchArtistId('patsy cline')
     artistId3 = fetchArtistId('五月天')
    
