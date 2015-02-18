@@ -7,74 +7,7 @@ from fetchArtist import fetchArtistInfo
 from fetchAlbums import fetchAlbumInfo
 from fetchAlbums import fetchAlbumIds
 
-###NOTE: I HAD DIFFICULTIES IMPORTING FUNCTIONS FROM OTHER python files
-###SCROLL DOWN TO SEE NEW CODE
 
-def fetchArtistId(name):
-    """Using the Spotify API search method, take a string that is the artist's name, 
-    and return a Spotify artist ID.
-    """
-    url="https://api.spotify.com/v1/search?query="+'"'+name+'"'+"&type=artist"
-    req=requests.get(url)
-    data=req.json()
-    artists=data['artists']
-    items=artists['items']
-    firstitems=items[0]
-    artid=firstitems['uri']
-    artist_id=artid[15:]
-    return artist_id
-
-#fetchArtistId('Led Zeppelin')
-
-def fetchArtistInfo(artist_id):
-    """Using the Spotify API, takes a string representing the id and
-`   returns a dictionary including the keys 'followers', 'genres', 
-    'id', 'name', and 'popularity'.
-    """
-    url="https://api.spotify.com/v1/artists/"+artist_id
-    req=requests.get(url)
-    data=req.json()
-    artistinfo={}
-    artistinfo['id']=artist_id
-    artistinfo['name']=data['name']
-    artistinfo['followers']=data['followers']
-    artistinfo['genres']=data['genres']
-    artistinfo['popularity']=data['popularity']
-    return artistinfo
-
-def fetchAlbumInfo(album_id):
-    """Using the Spotify API, take an album ID 
-    and return a dictionary with keys 'artist_id', 'album_id' 'name', 'year', popularity'
-    """
-    url="https://api.spotify.com/v1/albums/"+album_id
-    req=requests.get(url)
-    data=req.json()
-    albuminfo={}
-
-    artistinfo=data['artists']
-    firstartist=artistinfo[0]
-    artist_id=firstartist['id']
-    albuminfo['artist_id']=artist_id
-
-    rawuri=data['uri']
-    albuminfo['album_id']=rawuri[14:]
-
-    albuminfo['name']=data['name']
-
-    releasedate=data['release_date']
-    year=releasedate[0:4]
-    albuminfo['year']=year
-    
-    albuminfo['popularity']=data['popularity']
-    return albuminfo
-
-
-#####NEW CODE STARTS HERE!!!
-
-fetchArtistInfo(fetchArtistId('Led Zeppelin'))
-artist_dictionary=[]
-artist_dictionary.append(fetchArtistInfo(fetchArtistId('Led Zeppelin')))
-artist_dictionary.append(fetchArtistInfo(fetchArtistId('Robert Johnson')))
 
 
 
@@ -101,14 +34,20 @@ def writeArtistsTable(artist_info_list):
     return f
 
 
-writeArtistsTable(artist_dictionary)    
+
+#writeArtistsTable(artist_dictionary)    
   
 
 #Create dictionary with multiple albums to test
 
-album_list=[]
-album_list=fetchAlbumIds(fetchArtistId('Led Zeppelin'))
-
+#Un-comment to test code
+#album_list=[]
+#album_list=fetchAlbumIds(fetchArtistId('Led Zeppelin'))
+#album_list_dictionary=[]
+#for albums in album_list:
+#    album_info=fetchAlbumInfo(albums)
+#    album_list_dictionary.append(album_info)
+#print album_list_dictionary
 
 def writeAlbumsTable(album_info_list):
     """
@@ -124,7 +63,7 @@ def writeAlbumsTable(album_info_list):
 
 
     for i in range(len(album_info_list)):
-        album=fetchAlbumInfo(album_info_list[i])
+        album=album_info_list[i]
         album_id=album['album_id']
         album_name=album['name']
         year=album['year']
@@ -133,4 +72,4 @@ def writeAlbumsTable(album_info_list):
         
     return f
 
-writeAlbumsTable(album_list)
+#writeAlbumsTable(album_list_dictionary)
