@@ -9,14 +9,20 @@ def fetchArtistId(name):
     url="https://api.spotify.com/v1/search?query="+'"'+name+'"'+"&type=artist"
     req=requests.get(url)
     data=req.json()
+    
     artists=data['artists']
     items=artists['items']
+    if items==[]:
+    	print "Artist not found; try retyping"
+    		
     firstitems=items[0]
     artid=firstitems['uri']
+    
     artist_id=artid[15:]
     return artist_id
 
-#fetchArtistId('Led Zeppelin')
+test=fetchArtistId('earth wind and fire')
+print test
 
 def fetchArtistInfo(artist_id):
     """Using the Spotify API, takes a string representing the id and
@@ -32,7 +38,7 @@ def fetchArtistInfo(artist_id):
     artistinfo['id']=artist_id
     artistinfo['name']=data['name']
     artistinfo['popularity']=data['popularity']
-    print artistinfo
+    return artistinfo
 
-fetchArtistInfo(fetchArtistId('Led Zeppelin'))
+#fetchArtistInfo(fetchArtistId('Led Zeppelin'))
 
