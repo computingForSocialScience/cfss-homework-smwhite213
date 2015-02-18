@@ -65,5 +65,5 @@ def plotBarChart():
 
 
     
-getBarChartData()
-plotBarChart()
+#getBarChartData()
+#plotBarChart()
