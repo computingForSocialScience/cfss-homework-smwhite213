@@ -87,7 +87,7 @@ def writeEdgeList(artistID, depth, filename):
 
 	return edgeList
 
-writeEdgeList(fetchArtistId("Led Zeppelin"),2,"edgelist.csv")
+writeEdgeList(fetchArtistId("The Rolling Stones"),2,"edgelist.csv")
 
 
 
