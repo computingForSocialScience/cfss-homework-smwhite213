@@ -1,0 +1,32 @@
+
+
+<!doctype html>
+<html>
+<head>
+	<title>playlist</title>
+</head>
+<body>
+	<h2>Playlists</h2>
+
+	<table>
+		<tr>
+			<td>song_order</td>
+			<td>artistName</td>
+			<td>albumName</td>
+			<td>songName</td>
+		</tr>
+
+		{% for playlistId, song_order, artistName, albumName, songName in songs %}
+
+		<tr>
+			<td>{{song_order}}</td>
+			<td>{{artistName}}</td>
+			<td>{{albumName}}</td>
+			<td>{{songName}}</td>
+		</tr>
+
+		
+	</table>
+
+</body>
+</html>
