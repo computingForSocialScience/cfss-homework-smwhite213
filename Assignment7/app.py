@@ -20,6 +20,10 @@ db=pymysql.connect(db=dbname, host=host, user=user,passwd=passwd, charset='utf8'
 cur = db.cursor()
 app = Flask(__name__)
 
+#sql_dropplaylists = '''DROP TABLE IF EXISTS playlists'''
+#cur.execute(sql_dropplaylists)
+#sql_dropsongs = '''DROP TABLE IF EXISTS songs'''
+#cur.execute(sql_dropsongs)
 
 @app.route('/')
 def make_index_resp():
@@ -28,13 +32,20 @@ def make_index_resp():
     return(render_template('index.html'))
 
 
+
+
+
 @app.route('/playlists/')
 def make_playlists_resp():
+    cur.execute('''SELECT * FROM playlists;''')
+    playlists = cur.fetchall()
     return render_template('playlists.html',playlists=playlists)
 
 
 @app.route('/playlist/<playlistId>')
 def make_playlist_resp(playlistId):
+    cur.execute('''SELECT * FROM songs WHERE playlistId = %s ORDER BY song_order;''',playlistId)
+    songs = cur.fetchall()
     return render_template('playlist.html',songs=songs)
 
 
@@ -46,12 +57,11 @@ def add_playlist():
     elif request.method == 'POST':
         # this code executes when someone fills out the form
         artistName = request.form['artistName']
-        # YOUR CODE HERE
+        createNewPlaylist(artistName)
         return(redirect("/playlists/"))
 
-
 def getRandomSong(albumid):
-
+    """Function copied and pasted from Assignment 6"""
     url="https://api.spotify.com/v1/albums/"+albumid+"/tracks"
     req=requests.get(url)
     data=req.json()
@@ -81,6 +91,7 @@ def createNewPlaylist(artistName):
     #cur.execute(playlistId)
 
     playlistId = cur.lastrowid
+    print playlistId
 
     #Obtain artist ID and relevant info
     artistID = fetchArtistId(artistName)
@@ -89,11 +100,13 @@ def createNewPlaylist(artistName):
     for i in range(len(edges)):
         newartists.append(edges[i][1])
 
-    count=0
+    print newartists
+
+    count=1
     while count<= 30:
 
         #Pick a random artist, album, and song from the list of edges (up to 30)
-        song_order=count+1
+        song_order=count
 
         picknewartist=np.random.choice(newartists)
         artistInfo=fetchArtistInfo(picknewartist)
@@ -114,6 +127,7 @@ def createNewPlaylist(artistName):
 
         count+=1
 
+    #db.commit()
 
 # print the songs table to test 
     cur.execute('''SELECT * FROM songs;''')
@@ -128,7 +142,9 @@ def createNewPlaylist(artistName):
 #cur.execute(mysql_createSongs)
 
 createNewPlaylist("Led Zeppelin")
+#createNewPlaylist("The Rolling Stones")
 
+cur.close()
 
 if __name__ == '__main__':
     app.debug=True
