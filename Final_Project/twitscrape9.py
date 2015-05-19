@@ -42,13 +42,13 @@ TwitConsumerSecret="c9IrvGQQrosI0uqR5pjVf1clYDXNjgZEqwrtCxGJyIDIhXVxRz"
 auth=tweepy.OAuthHandler(TwitConsumerKey,TwitConsumerSecret)
 auth.set_access_token(TwitAccessToken,TwitAccessSecret)
 
-#Note that, because of the large number of calls, wait_on_rate_limit is 
-#necessary when running the full program (but not the "test version" as
-#described below.)
+########Note that, because of the large number of calls, wait_on_rate_limit is 
+    #necessary when running the full program (but not the "test version" as
+    #described below.)
 api=tweepy.API(auth,wait_on_rate_limit=True)
 
 #Using the Sunlight Congress API, fetches members of the 114th Congress
-#returns a dictionary with Congress information.
+    #returns a dictionary with Congress information.
 
 url="https://congress.api.sunlightfoundation.com/legislators?&per_page=50&page=11&apikey="+SunlightApiKey
 
@@ -65,18 +65,18 @@ def getuserid(twitSN):
 #####################################################################
 
 #congresslist will be a list of tuples for each congressperson with a valid Twitter ID 
-#and a strictly positive number of tweets.
+    #and a strictly positive number of tweets.
 congresslist=[]
 
 #Uncomment count2 and failcount to test code. When full code is running,
-#there should be 539 congresspeople, a few of whom may not have valide 
-#Twitter IDs (failcount).
+    #there should be 539 congresspeople, a few of whom may not have valide 
+    #Twitter IDs (failcount).
 
 #count2=0
 #failcount=0
 
 
-################################
+#####################################################################
 #Notes on the loop below:
 #Run only one of the two versions at a time (i.e., only one set of the below lines of code
     #should be uncommented at a given time):
@@ -89,7 +89,7 @@ congresslist=[]
         #for page in range(1,4):
         #for person in congresspeople[0:10]:
         #rawstatuses=api.user_timeline(twitterid,count=10)        
-################################
+#####################################################################
 
 
 #The below loop makes sure to loop through pages of Sunlight Foundation request.
@@ -106,8 +106,8 @@ for page in range(1,4):
     #sentiment of tweets via vaderSentiment.  
     
     #One and only one of the two below lines should be uncommented:  
-    for person in congresspeople[0:10]:
-    #for person in congresspeople:
+    #for person in congresspeople[0:10]:
+    for person in congresspeople:
         
         #count2+=1
         lastname=person['last_name']
@@ -123,8 +123,9 @@ for page in range(1,4):
         
         #Skip congresspeople for whom twitter ID isn't missing but is listed as "None."
         twitterSN_str=str(twitterSN)
-        count_NoneSN=0
-        print twitterSN_str
+        #count_NoneSN=0
+
+        #print twitterSN_str
         if twitterSN_str=="None":
             #count_NoneSN+=1
             continue
@@ -177,7 +178,7 @@ for page in range(1,4):
             compound=float(vs['compound'])
             totalcomp+=compound
 
-        #Calculates average sentiment for all collected tweets and drops observations without 
+        #Calculates average sentiments for all collected tweets and drops observations without 
         #any tweets
         if not persontweets==0:
             avgneg=totalneg/persontweets
@@ -197,7 +198,8 @@ for page in range(1,4):
     #Uncomment below line in order to monitor progress of loop   
     #print page
 
-
+#Test loop:
+#print congresslist[0:3]
 
 ########################################
 #Print basic info about results
@@ -211,8 +213,8 @@ for page in range(1,4):
 print "Total number with accounts"
 length=len(congresslist)
 print length
-print "Accounts listed as None"
-print count_NoneSN
+#print "Accounts listed as None"
+#print count_NoneSN
 
 
 ########################################
@@ -269,6 +271,4 @@ print "Repubs with accounts"
 print countR
 print "Independents with accounts"
 print countI
-#Of the 539 Congresspeople in the 114th Congress, 510 have Twitter ids, and only 159 could
-#be matched to twitter accounts.
 
