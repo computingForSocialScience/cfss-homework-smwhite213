@@ -9,51 +9,64 @@ from pandas.io.data import DataReader as dr
 import statsmodels.api as sm 
 import pandas.stats.ols as pdols
 from pandas.stats.plm import PanelOLS
+from matplotlib.font_manager import FontProperties as fp 
 
 
 
-#infile=open('sentiments_testruns.csv','r')
-#infile=open('sentiments.csv','r')
+#####################################################################
+#Read and organize data from csv file
+#####################################################################
 
-#reader=csv.reader(infile)
+#df=pd.DataFrame.from_csv('sentiments_testruns.csv',header=0)
+df=pd.DataFrame.from_csv('sentiments.csv',header=0)
 
-#readlist=[]
-#for line in reader:
-#	readlist.append(line)
 
-#print readlist	
-#df=pd.DataFrame(readlist)
-#print df
-
-df=pd.DataFrame.from_csv('sentiments_testruns.csv',header=0)
-#print df2
-#index=df.index
-#print index
-
-#df['Avg Neg']=df['Avg Neg'].astype('float')
-
-#print df2.dtypes
-
-#df2=df[5:9].astype(float).describe()
-
-sumstats=df.describe()
-#print sumstats
-
-correlations=df.corr()
-#print correlations
-
+#Split data by party, leaving out independents
 cat1=df[df['Party']=="R"]
 cat2=df[df['Party']=="D"]
 
-ttests=[]
-#df_ttests=pd.DataFrame(columns=['T-Statistic','P-Value'])
+#####################################################################
+#Create and save boxplots
+#####################################################################
 
+bp=df.boxplot(column=['Avg Neg','Avg Neut','Avg Pos','Avg Compound'],by='Party')
+plt.savefig('boxplots_byparty.png')
+
+bp=df.boxplot(column=['Avg Neg'],by='Party')
+plt.savefig('boxplots_byparty_negonly.png')
+
+#bp=df.boxplot(column=['Avg Neg'],by='State').fp.set_size('x-small')
+bp=df.boxplot(column=['Avg Neg'],by='State')
+plt.savefig('boxplot_bystate.png')
+
+
+#####################################################################
+#Descriptive Statistics
+#####################################################################
+
+sumstats=df.describe()
+print "Basic summary statistics"
+print sumstats
+print "***********************************************************"
+
+correlations=df.corr()
+print "Correlation Matrix"
+print correlations
+print "***********************************************************"
+
+#####################################################################
+#Conduct ttests and write to csv files
+#####################################################################
+
+
+##Basic ttests by party
+ttests=[]
 
 ttestNeg=ttest_ind(cat1['Avg Neg'],cat2['Avg Neg'])
 senttypeN=('Negative',)
 insertN=senttypeN+ttestNeg
 ttests.append(insertN)
-print ttestNeg
+#print ttestNeg
 
 ttestNeut=ttest_ind(cat1['Avg Neut'],cat2['Avg Neut'])
 senttypeNe=('Neutral',)
@@ -72,76 +85,64 @@ ttests.append(insertC)
 
 df_ttests=pd.DataFrame(ttests,columns=('Sentiment','T-Statistic','P-Value'))
 print df_ttests
+df_ttests.to_csv('ttests_basic.csv')
 
-#boxplotdf=pd.DataFrame(df,columns=['AvgNeg','AvgPos'])
-#df['X']=df['Party']
-#plt.figure();
-bp=df.boxplot(column=['Avg Neg','Avg Neut','Avg Pos','Avg Compound'],by='Party')
-plt.savefig('boxplots_byparty.png')
-#plt.show()
-bp=df.boxplot(column=['Avg Neg'],by='State')
-plt.savefig('boxplot_bystate.png')
 
-#Dummy variable for being a Republican
-
+#Create Dummy Variables for Party
 df2=pd.concat([df,pd.get_dummies(df['Party'],dummy_na=False)],axis=1)
 #print df2
-
-#x=pd.get_dummies(df['Party'], dummy_na=False)
-#print x
-
-#xsumstats=df['x'].describe()
-
-#print xsumstats
-x=df2['R']
-#print x
-y=df2['Avg Neg']
-gradient, intercept, r_value, p_value, std_error=stats.linregress(x,y)
-#print "Gradient and intercept and p-value"
-print gradient, intercept, p_value
-
 state_ttests=[]
-for state in df2['State']:
-	#if df2[df2['State']==state]:
-	#statelist=df2['State'].tolist()
-	#print statelist
-	#ttestNegS=ttest_ind(cat1['Avg Neg'],cat2['Avg Neg'])
+
+#Create a streamlined list of states for a data frame of ttests by state
+statelist=df2['State'].tolist()
+statelist2=[]
+for state in statelist:
+	if state in statelist2:
+		continue
+	else:
+		statelist2.append(state)
+#print statelist2
+
+
+#####################################
+
+#Perform ttest by party within each state. In csv file, states without sufficient data
+#will have blank rows.
+for state in statelist2:
 	cat1state=cat1[cat1['State']==state]
 	cat2state=cat2[cat2['State']==state]
-	ttestNegS=ttest_ind(cat1state['Avg Neg'],cat2state['Avg Neg'])
-	#info=df2.loc[df['State']==state].extract('State')
-	#state=info['State']
-	#print info
-	#col1=str(state)
+	try:
+		ttestNegS=ttest_ind(cat1state['Avg Neg'],cat2state['Avg Neg'])
+	except RuntimeWarning:
+		continue
+	
+
 	tstat,pvalue=ttestNegS
+
 	insertS=(state,tstat,pvalue)
 	state_ttests.append(insertS)
 
-cat2=df[df['Party']=="D"]
-
-df3=pd.DataFrame(state_ttests)
-print df3
-
-#print df2
-#model=sm.OLS(y,x).fit()
-#print model.summary()
+#Write to csv file
+df3=pd.DataFrame(state_ttests,columns=('State','T-Statistic','P-Value'))
+df3.to_csv('ttests_bystate.csv')
 
 
-#df3=pd.concat([df2,pd.get_dummies(df2['State'],dummy_na=False)],axis=1)
+#####################################################################
+#Regression
+#####################################################################
 
-#x=df3[['R']][:-1]
-#y=df3['Avg Neg']
-#gradient, intercept, r_value, p_value, std_error=stats.linregress(x,y)
+reg_list=[]
+
+x1=df2['R']
+#x2=df2['State']
+#x=np.column_stack((x1,x2))
+x=sm.add_constant(x1)
+print x
+#y=np.dot(x,df2['Avg Neg'])+e 
+y=df2['Avg Neg']
+#gradient, intercept, r_value, p_value, std_error=stats.linregress(x1,y)
 #print "Gradient and intercept and p-value"
 #print gradient, intercept, p_value
-#reg=PanelOLS(y=df2['Avg Neg'],x=df2['R'],cluster=['State'])
-#print reg
-#reg=PanelOLS(y=df['Avg Neg'],x=df['R'],entity_effects=True)
-#reg=PanelOLS(y=df2['Avg Neg'],x=df2['R'])
+model=sm.OLS(y,x).fit()
+print model.summary()
 
-#print reg
-
-#model=pd.ols(y=df['Avg Neg'],x=df['Party'])
-#print model
-
-#df2.log
