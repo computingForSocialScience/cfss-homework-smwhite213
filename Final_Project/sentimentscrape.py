@@ -223,7 +223,7 @@ writer=csv.writer(outfile)
 #    'Average Compound Sentiment','Total Tweets Collected'])
 
 #Preferred for testing: Add Header with less descriptive column names
-#writer.writerow(['Lastname','Firstname','TwitterID','State','Party','Avg Neg','Avg Neut','Avg Pos','Avg Compound','#Tweets'])
+writer.writerow(['Lastname','Firstname','TwitterID','State','Party','Avg Neg','Avg Neut','Avg Pos','Avg Compound','#Tweets'])
 
 #Insert congress tweet info into csv
 for person in congresslist:
