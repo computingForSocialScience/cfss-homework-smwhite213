@@ -214,8 +214,8 @@ for page in range(1,4):
 
 #***********************#
 
-outfile=open('sentiments.csv','wb')
-#outfile=open('sentiments_testruns.csv','wb')
+#outfile=open('sentiments.csv','wb')
+outfile=open('sentiments_testruns.csv','wb')
 writer=csv.writer(outfile)
 
 #Add Header with more descriptive column names
